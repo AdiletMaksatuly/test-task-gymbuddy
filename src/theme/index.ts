@@ -1,9 +1,11 @@
 import { SIZES } from "./sizes";
 import { COLORS } from "./colors";
+import { STYLES } from "./styles";
 
 const theme = {
     SIZES,
-    COLORS
+    COLORS,
+    STYLES
 };
 
 export default theme;

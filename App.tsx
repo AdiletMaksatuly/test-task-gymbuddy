@@ -1,20 +1,22 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import {StatusBar, StyleSheet, View} from 'react-native';
+import ExerciseScreen from "./src/components/ExerciseScreen";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+      <>
+        <StatusBar hidden={false} />
+        <View style={styles.container}>
+          <ExerciseScreen />
+        </View>
+      </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#000000',
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
 });
