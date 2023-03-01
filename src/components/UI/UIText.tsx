@@ -1,14 +1,12 @@
 import styled from "styled-components/native";
-import { StyleSheet } from "react-native";
-import NamedStyles = StyleSheet.NamedStyles;
+import { TextProps } from "react-native";
 import theme from "../../theme";
 import { ReactNode } from "react";
 
-interface UITextProps {
+interface UITextProps extends TextProps {
     size?: number;
     type?: 'uppercase' | 'lowercase' | 'capitalize';
     weight?: 400 | 500 | 600 | 700 | 800 | 900
-    style?: NamedStyles<any>;
     color?: string;
     children: ReactNode;
 }
