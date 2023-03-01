@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "server": "json-server --watch src/data/db.json --port 5000"
   },
   "dependencies": {
     "expo": "~48.0.4",

@@ -1,0 +1,19 @@
+{
+  "exercises": [
+    {
+      "id": 1,
+      "name": "Упражнение 1",
+      "imageURL": "https://sportishka.com/uploads/posts/2022-11/1667490565_2-sportishka-com-p-paren-v-zale-pinterest-3.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Упражнение 2",
+      "imageURL": "https://st2.depositphotos.com/3207359/10819/i/600/depositphotos_108192462-stock-photo-muscular-man-out-in-gym.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Упражнение 3",
+      "imageURL": "https://st.focusedcollection.com/9264440/i/650/focused_475723852-stock-photo-man-standing-gym-lifting-weights.jpg"
+    }
+  ]
+}
