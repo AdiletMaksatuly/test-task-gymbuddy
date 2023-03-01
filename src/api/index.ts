@@ -1,4 +1,4 @@
-import {fetchExercises} from "./exercise";
+import { fetchExercises } from "./exercise.api";
 
 export {
     fetchExercises

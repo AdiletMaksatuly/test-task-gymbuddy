@@ -1,0 +1,1 @@
+export const EXERCISES_SCREEN_PADDING_X = 20;

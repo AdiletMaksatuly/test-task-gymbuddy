@@ -1,11 +1,9 @@
 import styled from "styled-components/native";
 import theme from "../../theme";
 import { ReactNode } from "react";
-import { PressableProps, StyleSheet } from "react-native";
-import NamedStyles = StyleSheet.NamedStyles;
+import { PressableProps } from "react-native";
 
 interface UIButtonProps extends PressableProps {
-    style?: NamedStyles<any>;
     children: ReactNode;
 }
 
