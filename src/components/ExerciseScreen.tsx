@@ -11,6 +11,7 @@ import { ALL_STEPS_COUNT } from "../models/steps.const";
 import { EXERCISES_SCREEN_PADDING_X } from "../models/exercises-screen.const";
 import { generateNumbers, getViewportHeight } from "../utils";
 import { fetchExercises } from "../api/";
+import { Training } from "../models/training.model";
 
 const MAX_WEIGHT = 200;
 const MAX_REPS = 50;
@@ -19,6 +20,7 @@ function ExerciseScreen() {
     const [currentStep, setCurrentStep] = useState(0);
     const [exercises, setExercises] = useState<Exercise[]>([]);
     const [fetchError, setFetchError] = useState<Error | null>(null);
+    const [threeSet, setThreeSet] = useState<Training[]>([]);
 
     const reps = useMemo(() => {
         return generateNumbers(MAX_REPS)
@@ -32,11 +34,72 @@ function ExerciseScreen() {
         fetchExercises()
             .then((exercises: Exercise[]) => {
                 setExercises(exercises);
+
+                setThreeSet([{
+                    exercise: exercises[currentStep],
+                    weight: 0,
+                    reps: 0,
+                    step: currentStep
+                }])
             })
             .catch((error: Error) => {
                 setFetchError(error);
             });
     }, []);
+
+    useEffect(() => {
+        setThreeSet(prev => [...prev, {
+            exercise: exercises[currentStep],
+            weight: 0,
+            reps: 0,
+            step: currentStep
+        }]);
+    }, [currentStep]);
+
+    const pickHandler = (value: number, triggeredBy: 'weight' | 'reps'): void => {
+        if (exercises.length === 0) return;
+
+        const currentExercise = exercises[currentStep];
+
+        const currentExerciseInThreeSet = threeSet.find((training) => {
+            return training.exercise.id === currentExercise.id;
+        });
+
+        if (!currentExerciseInThreeSet) {
+            setThreeSet(prev => [...prev, {
+                exercise: exercises[currentStep],
+                weight: triggeredBy === 'weight' ? value : 0,
+                reps: triggeredBy === 'reps' ? value : 0,
+                step: currentStep
+            }])
+        }
+
+        if (triggeredBy === 'weight') {
+            setThreeSet(prev => prev.map((training) => {
+                if (training.exercise.id === currentExercise.id) {
+                    return {
+                        ...training,
+                        weight: value,
+                    }
+                }
+
+                return training;
+            }));
+        }
+
+        if (triggeredBy === 'reps') {
+            setThreeSet(prev => prev.map((training) => {
+                if (training.exercise.id === currentExercise.id) {
+                    return {
+                        ...training,
+                        reps: value,
+                    }
+                }
+
+                return training;
+            }));
+        }
+    };
 
     const getHeaderText = (): string => {
         return `${currentStep + 1} / ${ALL_STEPS_COUNT}`;
@@ -51,6 +114,7 @@ function ExerciseScreen() {
 
     const goNextStep = (): void => {
         if (ALL_STEPS_COUNT - 1 === currentStep) {
+            console.log(threeSet);
             return;
         }
 
@@ -78,8 +142,8 @@ function ExerciseScreen() {
 
 
             <View style={styles.screenFooter}>
-                <WeightPicker items={weights} onPick={() => {}}/>
-                <RepsPicker items={reps} onPick={() => {}} />
+                <WeightPicker items={weights} onPick={(value) => pickHandler(value, 'weight')}/>
+                <RepsPicker items={reps} onPick={(value) => pickHandler(value, 'reps')} />
 
                 <UIButton style={styles.submitButton} onPress={goNextStep}>
                     <UIText
@@ -102,7 +166,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingVertical: 40,
         paddingHorizontal: EXERCISES_SCREEN_PADDING_X,  borderWidth: 1,
-        borderColor: 'red',
     },
     screenHeader: {
         rowGap: 20,

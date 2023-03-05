@@ -1,10 +1,11 @@
 import { StyleSheet, View } from "react-native";
 import { getViewportWidth } from "../utils";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import UIText from "./UI/UIText";
 import theme from "../theme";
 import UiPicker from "./UI/UIPicker";
 import { EXERCISES_SCREEN_PADDING_X } from "../models/exercises-screen.const";
+import Carousel from "react-native-snap-carousel";
 
 type Reps = number;
 
@@ -17,6 +18,12 @@ const pickerWidth = getViewportWidth() - (EXERCISES_SCREEN_PADDING_X * 2);
 
 function RepsPicker({ items, onPick }: RepsPickerProps) {
     const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+    const pickerRef = useRef<Carousel<any>>(null);
+
+    useEffect(() => {
+        setActiveSlideIndex(0);
+        pickerRef.current?.snapToItem(0);
+    }, [items]);
 
     const renderItem = ({ item, index }: { item: Reps, index: number }) => {
         return (
@@ -45,6 +52,7 @@ function RepsPicker({ items, onPick }: RepsPickerProps) {
                 size={theme.SIZES.font.small}
             >Укажите количество повторений</UIText>
             <UiPicker
+                pickerRef={pickerRef}
                 items={items}
                 renderItem={renderItem}
                 width={pickerWidth}

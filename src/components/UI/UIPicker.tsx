@@ -1,10 +1,13 @@
 import UiCarousel from "./UICarousel";
 import { getViewportWidth } from "../../utils";
 import { StyleSheet, View } from "react-native";
+import { RefObject } from "react";
+import Carousel from "react-native-snap-carousel";
 
 interface UiPickerProps {
     items: any[];
     renderItem: (item: any) => JSX.Element;
+    pickerRef: RefObject<Carousel<any>>;
     activeSlideIndex?: number;
     onPick?: (slideIndex: number) => void;
     width?: number;
@@ -15,6 +18,7 @@ interface UiPickerProps {
 function UiPicker({
                       items,
                       renderItem,
+                      pickerRef,
                       width,
                       height,
                       itemWidth,
@@ -23,6 +27,7 @@ function UiPicker({
     return (
         <View style={{...styles.picker, height: height || 50}}>
             <UiCarousel
+                carouselRef={pickerRef}
                 data={items}
                 firstItem={activeSlideIndex}
                 renderItem={renderItem}
