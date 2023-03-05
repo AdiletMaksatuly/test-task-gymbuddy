@@ -19,7 +19,6 @@ function Exercises({ exercises, currentStep }: ExercisesProps) {
     const getImageStyles = (id: number) => ({
             ...styles.image,
             width: imageWidth,
-            height: imageWidth * 2,
             ...(id === currentStep
                 ? { opacity: 1 }
                 : { opacity: 0.5 })
@@ -32,7 +31,7 @@ function Exercises({ exercises, currentStep }: ExercisesProps) {
             ...styles.images,
             transform: [{translateX: translateX -(imageWidth + COLUMN_GAP) * currentStep}],
         });
-    }, [currentStep])
+    }, [currentStep]);
 
     return (
         <View style={styles.exercises}>
@@ -59,13 +58,13 @@ function Exercises({ exercises, currentStep }: ExercisesProps) {
 
 const styles = StyleSheet.create({
     exercises: {
-        flex: 1,
         maxWidth: '100%',
         overflow: 'hidden',
     },
     exerciseName: {
         textAlign: 'center',
-        marginVertical: 30,
+        marginTop: 30,
+        marginBottom: 15,
     },
     images: {
       flexDirection: 'row',
@@ -74,7 +73,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: 100,
-        height: 200,
+        height: 164,
     }
 });
 

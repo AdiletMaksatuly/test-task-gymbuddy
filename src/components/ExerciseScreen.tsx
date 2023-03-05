@@ -1,22 +1,40 @@
 import { View, StyleSheet } from "react-native";
-import { useEffect, useState } from "react";
-import UIText from "./UI/UIText";
+import { useEffect, useMemo, useState } from "react";
 import theme from "../theme";
+import UIText from "./UI/UIText";
 import UIButton from "./UI/UIButton";
-import { fetchExercises } from "../api/";
-import { Exercise } from "../models/exercies.model";
 import Exercises from "./Exercises";
+import WeightPicker from "./WeightPicker";
+import RepsPicker from "./RepsPicker";
+import { Exercise } from "../models/exercies.model";
 import { ALL_STEPS_COUNT } from "../models/steps.const";
 import { EXERCISES_SCREEN_PADDING_X } from "../models/exercises-screen.const";
+import { generateNumbers, getViewportHeight } from "../utils";
+import { fetchExercises } from "../api/";
+
+const MAX_WEIGHT = 200;
+const MAX_REPS = 50;
 
 function ExerciseScreen() {
     const [currentStep, setCurrentStep] = useState(0);
     const [exercises, setExercises] = useState<Exercise[]>([]);
+    const [fetchError, setFetchError] = useState<Error | null>(null);
+
+    const reps = useMemo(() => {
+        return generateNumbers(MAX_REPS)
+    }, [currentStep]);
+
+    const weights = useMemo(() => {
+        return generateNumbers(MAX_WEIGHT)
+    }, [currentStep]);
 
     useEffect(() => {
         fetchExercises()
             .then((exercises: Exercise[]) => {
                 setExercises(exercises);
+            })
+            .catch((error: Error) => {
+                setFetchError(error);
             });
     }, []);
 
@@ -39,44 +57,61 @@ function ExerciseScreen() {
         setCurrentStep(prev => prev + 1)
     }
 
+
     return (
         <View style={styles.container}>
-            <UIText weight={500} type={"uppercase"}>Трисет</UIText>
-            <View style={styles.counter}>
-                <UIText weight={700} type={"uppercase"} size={theme.SIZES.font.xxlarge}>{ getHeaderText() }</UIText>
-                <UIText weight={500} type={"uppercase"} size={theme.SIZES.font.small}>Подход</UIText>
+            <View style={styles.screenHeader}>
+                <UIText weight={500} type={"uppercase"}>Трисет</UIText>
+                <View style={styles.counter}>
+                    <UIText weight={700} type={"uppercase"} size={theme.SIZES.font.xxlarge}>{ getHeaderText() }</UIText>
+                    <UIText weight={500} type={"uppercase"} size={theme.SIZES.font.small}>Подход</UIText>
+                </View>
             </View>
+
             {
-                exercises && exercises.length
-                    ? <Exercises exercises={exercises} currentStep={currentStep} />
-                    : <UIText>Загрузка...</UIText>
+                fetchError
+                    ? <UIText>Ошибка загрузки упражнений { JSON.stringify(fetchError.message) }</UIText>
+                    : exercises && exercises.length
+                        ? <Exercises exercises={exercises} currentStep={currentStep} />
+                        : <UIText>Загрузка...</UIText>
             }
-            <UIButton style={styles.submitButton} onPress={goNextStep}>
-                <UIText
-                    color={theme.COLORS.dark.primary}
-                    weight={600}
-                    type={"uppercase"}>
+
+
+            <View style={styles.screenFooter}>
+                <WeightPicker items={weights} onPick={() => {}}/>
+                <RepsPicker items={reps} onPick={() => {}} />
+
+                <UIButton style={styles.submitButton} onPress={goNextStep}>
+                    <UIText
+                        color={theme.COLORS.dark.primary}
+                        weight={600}
+                        type={"uppercase"}>
                         { getConfirmButtonText() }
-                </UIText>
-            </UIButton>
+                    </UIText>
+                </UIButton>
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        height: getViewportHeight(),
         flex: 1,
         alignItems: 'center',
+        justifyContent: 'space-between',
         paddingVertical: 40,
-        paddingHorizontal: EXERCISES_SCREEN_PADDING_X,
+        paddingHorizontal: EXERCISES_SCREEN_PADDING_X,  borderWidth: 1,
+        borderColor: 'red',
     },
-    counter: {
-        marginTop: 15,
-        alignItems: 'center',
+    screenHeader: {
+        rowGap: 20,
     },
-    submitButton: {
-        marginTop: 40,
-    }
+    counter: {},
+    screenFooter: {
+        rowGap: 20,
+    },
+    submitButton: {}
 });
 
 export default ExerciseScreen;
